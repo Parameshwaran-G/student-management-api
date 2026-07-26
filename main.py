@@ -20,7 +20,7 @@ class StudentUpdate(BaseModel):
     email : Optional[str] = None
 
 # create student
-@app.post("/students")
+@app.post("/students",status_code=201)
 def create_student(student : Student):
     dataBase.append(student)
     return {
@@ -59,3 +59,23 @@ def filter_student(student_dept:str):
         "Students":filtered_students
     }
 
+# update student information
+@app.put("/students/{student_id}")
+def update_student(update_student:StudentUpdate,student_id:int):
+    for student in dataBase:
+        if student.student_id == student_id:
+            if update_student.student_name is not None :
+                student.student_name = update_student.student_name
+            if update_student.department is not None :
+                student.department = update_student.department
+            if update_student.cgpa is not None :
+                student.cgpa = update_student.cgpa
+            if update_student.email is not None :
+                student.email = update_student.email
+            return{
+                "Message":"Student Updated Successfully!!"
+            }
+    raise HTTPException(
+        status_code=404,
+        detail="Student Not Found!!"
+    )
