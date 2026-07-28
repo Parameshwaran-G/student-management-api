@@ -64,14 +64,9 @@ def filter_student(student_dept:str):
 def update_student(update_student:StudentUpdate,student_id:int):
     for student in dataBase:
         if student.student_id == student_id:
-            if update_student.student_name is not None :
-                student.student_name = update_student.student_name
-            if update_student.department is not None :
-                student.department = update_student.department
-            if update_student.cgpa is not None :
-                student.cgpa = update_student.cgpa
-            if update_student.email is not None :
-                student.email = update_student.email
+            updated_model = update_student.model_dump(exclude_none=True)
+            for key,value in updated_model.items():
+                setattr(student,key,value)
             return{
                 "Message":"Student Updated Successfully!!"
             }
