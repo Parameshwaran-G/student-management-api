@@ -74,3 +74,17 @@ def update_student(update_student:StudentUpdate,student_id:int):
         status_code=404,
         detail="Student Not Found!!"
     )
+
+# delete student record
+@app.delete("/students/{student_id}")
+def delete_student(student_id:int):
+    for student in dataBase:
+        if student.student_id == student_id :
+            dataBase.remove(student)
+            return {
+                "Message":"Student Data Deleted Successfully!!"
+            }
+    raise HTTPException(
+        status_code=404,
+        detail="Student Not Found!!"
+    )
