@@ -19,6 +19,12 @@ class StudentUpdate(BaseModel):
     cgpa : Optional[float] = None
     email : Optional[str] = None
 
+# response model
+class Student_Response(BaseModel):
+    student_name : str
+    department : str
+    cgpa : float
+
 # create student
 @app.post("/students",status_code=201)
 def create_student(student : Student):
@@ -29,14 +35,12 @@ def create_student(student : Student):
     }
 
 # get student by id
-@app.get("/students/{student_id}")
+@app.get("/students/{student_id}",response_model=Student_Response)
 def get_student(student_id : int):
     for student in dataBase:
         if student.student_id == student_id :
-            return {
-                "Message":"Student Found Successfully!!",
-                "Student":student
-            }
+            return student
+            
     raise HTTPException(
         status_code=404,
         detail="Student Not Found!!"
