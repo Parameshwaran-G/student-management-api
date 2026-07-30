@@ -1,4 +1,4 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI,HTTPException,Query
 from pydantic import BaseModel
 from typing import Optional
 
@@ -47,21 +47,23 @@ def get_student(student_id : int):
     )
 
 # return students of same group (filter by group)
+# query parameter validation
 @app.get("/students")
-def filter_student(student_dept:str):
+def filter_student(
+    student_dept : Optional[str] = None,
+    cgpa : float = Query(None,ge=0,le=10)
+    ):
     filtered_students = []
     for student in dataBase:
-        if student.department == student_dept :
-            filtered_students.append(student.student_name)
+        if (student_dept==None or student.department == student_dept) and \
+           (cgpa == None or student.cgpa == cgpa) :
+            filtered_students.append(student)
     if len(filtered_students) == 0 :
         raise HTTPException(
             status_code=404,
-            detail="Department Does Not Found!!"
+            detail="Student Not Found!!"
         )
-    return {
-        "Department":student_dept,
-        "Students":filtered_students
-    }
+    return filtered_students
 
 # update student information
 @app.put("/students/{student_id}")
