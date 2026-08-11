@@ -1,7 +1,10 @@
 from fastapi import FastAPI,HTTPException,Query
 from pydantic import BaseModel, Field
 from typing import Optional
+from database import engine, Base
+import models
 
+Base.metadata.create_all(engine)
 app = FastAPI()
 
 dataBase = []
