@@ -1,7 +1,8 @@
-from fastapi import FastAPI,HTTPException,Query
+from fastapi import FastAPI, HTTPException, Query, Depends
 from pydantic import BaseModel, Field
 from typing import Optional
-from database import engine, Base
+from database import engine, Base, get_db
+from sqlalchemy.orm import Session
 import models
 
 Base.metadata.create_all(engine)
@@ -54,8 +55,21 @@ class Student_Response(BaseModel):
 
 # create student
 @app.post("/students",status_code=201)
-def create_student(student : Student):
-    dataBase.append(student)
+def create_student(
+                    student : Student,
+                    db : Session = Depends(get_db)
+                   ):
+    student_obj = models.Student(
+        student_name = student.student_name,
+        student_id = student.student_id,
+        department = student.department,
+        cgpa = student.cgpa,
+        email = student.email
+    )
+    db.add(student_obj)
+    db.commit()
+    db.refresh(student_obj)
+
     return {
         "Message":"Student Data Created Successfully!!",
         "Student":student

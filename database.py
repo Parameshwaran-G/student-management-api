@@ -16,3 +16,10 @@ class Base(DeclarativeBase):
 
 with engine.connect() as connection:
     print("Database Connected Successfully!!")
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

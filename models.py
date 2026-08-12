@@ -2,7 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
 class Student(Base):
-    __tablename__ = "Students"
+    __tablename__ = "Student"
 
     student_name : Mapped[str]
     student_id : Mapped[int] = mapped_column(primary_key=True)
