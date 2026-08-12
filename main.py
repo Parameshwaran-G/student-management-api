@@ -77,15 +77,20 @@ def create_student(
 
 # get student by id
 @app.get("/students/{student_id}",response_model=Student_Response)
-def get_student(student_id : int):
-    for student in dataBase:
-        if student.student_id == student_id :
-            return student
-            
-    raise HTTPException(
-        status_code=404,
-        detail="Student Not Found!!"
-    )
+def get_student(
+    student_id : int,
+    db : Session = Depends(get_db)
+    ):
+
+    student = db.get(models.Student,student_id)
+
+    if student == None :     
+        raise HTTPException(
+            status_code=404,
+            detail="Student Not Found!!"
+        )
+
+    return student
 
 # return students of same group (filter by group)
 # query parameter validation
