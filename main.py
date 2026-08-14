@@ -52,6 +52,7 @@ class Student_Response(BaseModel):
     student_name : str
     department : str
     cgpa : float
+    email : str
 
 # create student
 @app.post("/students",status_code=201)
@@ -113,19 +114,32 @@ def filter_student(
 
 # update student information
 @app.put("/students/{student_id}")
-def update_student(update_student:StudentUpdate,student_id:int):
-    for student in dataBase:
-        if student.student_id == student_id:
-            updated_model = update_student.model_dump(exclude_none=True)
-            for key,value in updated_model.items():
-                setattr(student,key,value)
-            return{
-                "Message":"Student Updated Successfully!!"
-            }
-    raise HTTPException(
-        status_code=404,
-        detail="Student Not Found!!"
-    )
+def update_student(
+                   update_student:StudentUpdate,
+                   student_id:int, 
+                   db : Session = Depends(get_db)
+                   ):
+
+
+    student = db.get(models.Student,student_id)
+
+    if student is None :
+        raise HTTPException(
+                status_code=404,
+                detail="Student Not Found!!"
+            )
+
+    updated_student = update_student.model_dump(exclude_none=True)
+    for key,value in updated_student.items():
+        setattr(student,key,value)
+
+    db.commit()
+
+    return {
+        "Message":"Student Details Updated Successfully!!",
+        "Student":updated_student
+    }
+    
 
 # delete student record
 @app.delete("/students/{student_id}")
