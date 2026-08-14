@@ -143,14 +143,22 @@ def update_student(
 
 # delete student record
 @app.delete("/students/{student_id}")
-def delete_student(student_id:int):
-    for student in dataBase:
-        if student.student_id == student_id :
-            dataBase.remove(student)
-            return {
-                "Message":"Student Data Deleted Successfully!!"
-            }
-    raise HTTPException(
-        status_code=404,
-        detail="Student Not Found!!"
-    )
+def delete_student(
+                    student_id:int,
+                    db : Session = Depends(get_db)
+                   ):
+
+    student = db.get(models.Student,student_id)
+
+    if student is None :
+        raise HTTPException(
+            status_code=404,
+            detail="Student Not Found!!"
+        )
+
+    db.delete(student)
+    db.commit()
+
+    return {
+        "Message":"Student Removed Successfully !!"
+    }
