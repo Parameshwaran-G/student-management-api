@@ -17,6 +17,8 @@ class Base(DeclarativeBase):
 with engine.connect() as connection:
     print("Database Connected Successfully!!")
 
+
+# Depend for get_db
 def get_db():
     db = SessionLocal()
     try:

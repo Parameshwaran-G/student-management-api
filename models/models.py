@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from database import Base
+from database.database import Base
 
 class Student(Base):
     __tablename__ = "Student"
