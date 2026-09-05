@@ -74,3 +74,13 @@ def delete_student(
     return {
         "Message":"Student Removed Successfully !!"
     }
+
+@router.get("/test/error")
+def test_error():
+    result = 10 / 0
+    return result
+
+@router.get("/test/type")
+def test_type():
+    result = "result"-0
+    return result
